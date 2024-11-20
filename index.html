@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中文编程实验室</title>
+    <!-- Include CodeMirror for the code editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    
+    <style>
+        /* Add new nav styles */
+        .nav {
+            background-color: #333;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav h1 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .nav a:hover {
+            color: #4CAF50;
+        }
+
+        .nav img {
+            height: 24px;
+            width: 24px;
+        }
+
+        /* Update body to account for nav */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        
+        .left, .right {
+            flex: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .right {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #output {
+            width: 100%;
+            height: 100%;
+            resize: none;
+            margin-top: 10px;
+            font-family: monospace;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        
+        #runButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        #runButton:hover {
+            background-color: #45a049;
+        }
+        
+        .CodeMirror {
+            height: 100% !important;
+        }
+        
+        .box-label {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add navigation bar -->
+    <nav class="nav">
+        <a href="icon.html"><img src="icon.png" alt="咱的LOGO"></a>
+        <h1>中文编程实验室</h1>
+        <a href="intro.html">介绍</a>
+        <a href="blog.html">博客</a>
+        <a href="about.html">关于我们</a>
+    </nav>
+
+    <div class="container">
+        <div class="left">
+            <div class="box-label">道友在此输入代码</div>
+            <textarea id="editor"></textarea>
+        </div>
+        <div class="right">
+            <div class="box-label">道友请看运行结果</div>
+            <button id="runButton">执行</button>
+            <textarea id="output" readonly placeholder="结果将在此显示"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Initialize CodeMirror
+        const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+            mode: "javascript",
+            theme: "monokai",
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            indentUnit: 4,
+            tabSize: 4,
+            lineWrapping: true
+        });
+
+        // Handle Run button click
+        document.getElementById("runButton").addEventListener("click", function() {
+            const code = editor.getValue();
+            const output = document.getElementById("output");
+            output.value = "";
+            
+            try {
+                // Initialize variable storage
+                let variables = new Map();
+                
+                // Process each line
+                const lines = code.split('\n');
+                for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+                    let line = lines[lineNumber].trim();
+                    
+                    // Remove comments and trailing content after ';;'
+                    const commentIndex = line.indexOf(';;');
+                    if (commentIndex !== -1) {
+                        line = line.substring(0, commentIndex).trim();
+                    }
+                    
+                    if (!line) continue;
+                    
+                    const parts = line.split(/\s+/);
+                    const command = parts[0];
+                    
+                    try {
+                        switch (command) {
+                            case "变量":
+                                for (let i = 1; i < parts.length; i++) {
+                                    variables.set(parts[i], 0);
+                                }
+                                break;
+                                
+                            case "设":
+                                if (parts.length !== 3) {
+                                    throw new Error("设置变量格式错误！正确格式：设 变量名 数值");
+                                }
+                                if (!variables.has(parts[1])) {
+                                    throw new Error(`未声明的变量：${parts[1]}`);
+                                }
+                                const value = parseFloat(parts[2]);
+                                if (isNaN(value)) {
+                                    throw new Error("无效的数值！");
+                                }
+                                variables.set(parts[1], value);
+                                break;
+                                
+                            case "加":
+                                if (parts.length !== 4) {
+                                    throw new Error("加法格式错误！正确格式：加 变量1 变量2 结果变量");
+                                }
+                                checkVariables(parts.slice(1), variables);
+                                const sum = variables.get(parts[1]) + variables.get(parts[2]);
+                                variables.set(parts[3], sum);
+                                break;
+                                
+                            case "减":
+                                if (parts.length !== 4) {
+                                    throw new Error("减法格式错误！正确格式：减 变量1 变量2 结果变量");
+                                }
+                                checkVariables(parts.slice(1), variables);
+                                const diff = variables.get(parts[1]) - variables.get(parts[2]);
+                                variables.set(parts[3], diff);
+                                break;
+                                
+                            case "乘":
+                                if (parts.length !== 4) {
+                                    throw new Error("乘法格式错误！正确格式：乘 变量1 变量2 结果变量");
+                                }
+                                checkVariables(parts.slice(1), variables);
+                                const product = variables.get(parts[1]) * variables.get(parts[2]);
+                                variables.set(parts[3], product);
+                                break;
+                                
+                            case "除":
+                                if (parts.length !== 4) {
+                                    throw new Error("除法格式错误！正确格式：除 变量1 变量2 结果变量");
+                                }
+                                checkVariables(parts.slice(1), variables);
+                                if (variables.get(parts[2]) === 0) {
+                                    throw new Error("除数不能为零！");
+                                }
+                                const quotient = variables.get(parts[1]) / variables.get(parts[2]);
+                                variables.set(parts[3], quotient);
+                                break;
+                                
+                            case "出":
+                                if (parts.length < 2) {
+                                    throw new Error("输出格式错误！正确格式：出 表达式");
+                                }
+                                let outputString = "";
+                                for (let i = 1; i < parts.length; i++) {
+                                    if (variables.has(parts[i])) {
+                                        outputString += variables.get(parts[i]);
+                                    } else {
+                                        outputString += parts[i];
+                                    }
+                                }
+                                output.value += outputString + '\n';
+                                break;
+                                
+                            default:
+                                throw new Error(`未知命令：${command}`);
+                        }
+                    } catch (error) {
+                        throw new Error(`错误在第 ${lineNumber + 1} 行: ${error.message} (解析部分: [${parts.join(', ')}], 部分数量: ${parts.length})`);
+                    }
+                }
+            } catch (error) {
+                output.value = "错误: " + error.message;
+            }
+        });
+
+        // Helper function to check if variables exist
+        function checkVariables(vars, variables) {
+            for (let v of vars) {
+                if (!variables.has(v)) {
+                    throw new Error(`未声明的变量：${v}`);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
