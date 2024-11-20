@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>介绍 - 中文编程实验室</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background-color: #333;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav img {
+            height: 24px;
+            width: 24px;
+        }
+
+        .nav h1 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .nav h1 a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav h1 a:hover {
+            color: #4CAF50;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .nav a:hover {
+            color: #4CAF50;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 0.5rem;
+        }
+
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 1rem 0;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html"><img src="zhprog-logo.webp" alt="咱的LOGO"></a>
+        <h1><a href="index.html">中文编程实验室</a></h1>
+        <a href="lab.html">返回实验室</a>
+    </nav>
+
+    <div class="content">
+        <div class="section">
+            <h2>什么是中文编程？</h2>
+            <p>我们不是把某种编程语言汉化，而是基于中文本身的特征，探索一种新的编程范式。我等道行有限，不敢奢望开天辟地，只求抛砖引玉。</p>
+        </div>
+
+        <div class="section">
+            <h2>基本语法</h2>
+            <p>我们的实验室支持以下基本操作：</p>
+            <div class="code-example">
+                变量 甲 乙 丙    // 声明变量
+                设 甲 10        // 设置变量值
+                设 乙 5
+                加 甲 乙 丙     // 将甲和乙相加，结果存入丙
+                出 "结果是:" 丙  // 输出结果
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>支持的操作</h2>
+            <ul>
+                <li><strong>变量</strong> - 声明新变量</li>
+                <li><strong>设</strong> - 设置变量的值</li>
+                <li><strong>加</strong> - 加法运算</li>
+                <li><strong>减</strong> - 减法运算</li>
+                <li><strong>乘</strong> - 乘法运算</li>
+                <li><strong>除</strong> - 除法运算</li>
+                <li><strong>出</strong> - 输出结果</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>示例程序</h2>
+            <div class="code-example">
+变量 价格 数量 总价
+设 价格 99
+设 数量 3
+乘 价格 数量 总价
+出 需要支付: 总价 元
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>开始使用</h2>
+            <p>点击下方按钮返回实验室，开始编写您的第一个中文程序！</p>
+            <a href="lab.html" class="back-button">返回实验室</a>
+        </div>
+    </div>
+</body>
+</html>
