@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="evolution.js"></script>
     
     <style>
         /* Add new nav styles */
@@ -153,121 +154,14 @@
             output.value = "";
             
             try {
-                // Initialize variable storage
-                let variables = new Map();
-                
-                // Process each line
-                const lines = code.split('\n');
-                for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-                    let line = lines[lineNumber].trim();
-                    
-                    // Remove comments and trailing content after ';;'
-                    const commentIndex = line.indexOf(';;');
-                    if (commentIndex !== -1) {
-                        line = line.substring(0, commentIndex).trim();
-                    }
-                    
-                    if (!line) continue;
-                    
-                    const parts = line.split(/\s+/);
-                    const command = parts[0];
-                    
-                    try {
-                        switch (command) {
-                            case "变量":
-                                for (let i = 1; i < parts.length; i++) {
-                                    variables.set(parts[i], 0);
-                                }
-                                break;
-                                
-                            case "设":
-                                if (parts.length !== 3) {
-                                    throw new Error("设置变量格式错误！正确格式：设 变量名 数值");
-                                }
-                                if (!variables.has(parts[1])) {
-                                    throw new Error(`未声明的变量：${parts[1]}`);
-                                }
-                                const value = parseFloat(parts[2]);
-                                if (isNaN(value)) {
-                                    throw new Error("无效的数值！");
-                                }
-                                variables.set(parts[1], value);
-                                break;
-                                
-                            case "加":
-                                if (parts.length !== 4) {
-                                    throw new Error("加法格式错误！正确格式：加 变量1 变量2 结果变量");
-                                }
-                                checkVariables(parts.slice(1), variables);
-                                const sum = variables.get(parts[1]) + variables.get(parts[2]);
-                                variables.set(parts[3], sum);
-                                break;
-                                
-                            case "减":
-                                if (parts.length !== 4) {
-                                    throw new Error("减法格式错误！正确格式：减 变量1 变量2 结果变量");
-                                }
-                                checkVariables(parts.slice(1), variables);
-                                const diff = variables.get(parts[1]) - variables.get(parts[2]);
-                                variables.set(parts[3], diff);
-                                break;
-                                
-                            case "乘":
-                                if (parts.length !== 4) {
-                                    throw new Error("乘法格式错误！正确格式：乘 变量1 变量2 结果变量");
-                                }
-                                checkVariables(parts.slice(1), variables);
-                                const product = variables.get(parts[1]) * variables.get(parts[2]);
-                                variables.set(parts[3], product);
-                                break;
-                                
-                            case "除":
-                                if (parts.length !== 4) {
-                                    throw new Error("除法格式错误！正确格式：除 变量1 变量2 结果变量");
-                                }
-                                checkVariables(parts.slice(1), variables);
-                                if (variables.get(parts[2]) === 0) {
-                                    throw new Error("除数不能为零！");
-                                }
-                                const quotient = variables.get(parts[1]) / variables.get(parts[2]);
-                                variables.set(parts[3], quotient);
-                                break;
-                                
-                            case "出":
-                                if (parts.length < 2) {
-                                    throw new Error("输出格式错误！正确格式：出 表达式");
-                                }
-                                let outputString = "";
-                                for (let i = 1; i < parts.length; i++) {
-                                    if (variables.has(parts[i])) {
-                                        outputString += variables.get(parts[i]);
-                                    } else {
-                                        outputString += parts[i];
-                                    }
-                                }
-                                output.value += outputString + '\n';
-                                break;
-                                
-                            default:
-                                throw new Error(`未知命令：${command}`);
-                        }
-                    } catch (error) {
-                        throw new Error(`错误在第 ${lineNumber + 1} 行: ${error.message} (解析部分: [${parts.join(', ')}], 部分数量: ${parts.length})`);
-                    }
-                }
+                const machine = new EvolutionMachine();
+                const result = machine.evolve(code);
+                output.value = result;
             } catch (error) {
-                output.value = "错误: " + error.message;
+                output.value = "错误：\n" + error.message;
             }
         });
 
-        // Helper function to check if variables exist
-        function checkVariables(vars, variables) {
-            for (let v of vars) {
-                if (!variables.has(v)) {
-                    throw new Error(`未声明的变量：${v}`);
-                }
-            }
-        }
     </script>
 </body>
 </html>
