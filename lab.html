@@ -50,31 +50,39 @@
             flex-direction: column;
         }
         
+        /* Update container and layout styles */
         .container {
             display: flex;
             flex: 1;
+            flex-direction: column;  /* Changed from row to column */
+            padding: 20px;          /* Added padding for better spacing */
+            gap: 20px;             /* Added gap between sections */
         }
         
         .left, .right {
-            flex: 1;
-            padding: 10px;
+            width: 100%;           /* Changed from flex: 1 to width: 100% */
+            padding: 0;            /* Removed padding since container has padding */
             display: flex;
             flex-direction: column;
         }
         
         .right {
-            display: flex;
-            flex-direction: column;
+            height: 40vh;          /* Added fixed height for output section */
+        }
+        
+        .left {
+            height: 40vh;          /* Added fixed height for editor section */
+        }
+
+        /* Ensure CodeMirror fills its container */
+        .CodeMirror {
+            height: 100% !important;
+            flex: 1;
         }
         
         #output {
-            width: 100%;
-            height: 100%;
-            resize: none;
-            margin-top: 10px;
-            font-family: monospace;
-            padding: 10px;
-            box-sizing: border-box;
+            flex: 1;              /* Make output textarea fill available space */
+            height: auto;         /* Changed from 100% to auto */
         }
         
         #runButton {
@@ -91,10 +99,6 @@
             background-color: #45a049;
         }
         
-        .CodeMirror {
-            height: 100% !important;
-        }
-        
         .box-label {
             font-size: 1.1rem;
             margin-bottom: 10px;
@@ -109,6 +113,14 @@
 
         .nav h1 a:hover {
             color: #4CAF50;
+        }
+
+        /* Add new styles for the header row */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -128,8 +140,10 @@
             <textarea id="editor"></textarea>
         </div>
         <div class="right">
-            <div class="box-label">道友请看运行结果</div>
-            <button id="runButton">执行</button>
+            <div class="header-row">
+                <div class="box-label">道友请看运行结果</div>
+                <button id="runButton">执行</button>
+            </div>
             <textarea id="output" readonly placeholder="结果将在此显示"></textarea>
         </div>
     </div>
