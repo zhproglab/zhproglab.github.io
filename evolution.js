@@ -163,7 +163,7 @@ class EvolutionMachine {
                 const steps = this.evolveExpression(tokens);
                 
                 // Format steps with arrows
-                results.push(steps.join(' => '));
+                results.push(steps.join(' =>\n'));
             }
         }
 
@@ -186,10 +186,10 @@ const test1 = `
 
 // Test case 2: Factorial rule
 const test2 = `
-1 的阶乘 => 1
-甲 的阶乘 => 甲 乘 甲 减 1 的阶乘
+阶乘 1 => 1
+阶乘 甲 => 甲 乘 阶乘 甲 减 1
 
-3 的阶乘
+阶乘 4
 `;
 
 //console.log(machine.evolve(test2)); // 输出: 6
