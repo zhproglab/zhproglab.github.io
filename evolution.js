@@ -9,6 +9,9 @@ class EvolutionMachine {
             '减': this.doSub.bind(this),
             '乘': this.doMul.bind(this),
             '除': this.doDiv.bind(this),
+            '阶乘': this.doFactorial.bind(this),
+            '幂': this.doPower.bind(this),
+            '指数': this.doExponent.bind(this),
         }
 
     }
@@ -83,6 +86,28 @@ class EvolutionMachine {
         });
     }
 
+    doFactorial(params) {
+        return this.doBinaryOp(params, nums => {
+            const n = nums[0];
+            if (n < 0) throw new Error('阶乘不能为负数');
+            if (!Number.isInteger(n)) throw new Error('阶乘必须为整数');
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        });
+    }
+
+    doPower(params) {
+        return this.doBinaryOp(params, nums => {
+            if (nums[0] === 0 && nums[1] < 0) throw new Error('零的负数次幂未定义');
+            return Math.pow(nums[0], nums[1]);
+        });
+    }
+
+    doExponent(params) {
+        return this.doBinaryOp(params, nums => Math.exp(nums[0]));
+    }
+
     doCmd(cmd, params, resultVar) {
         if (!this.cmds[cmd]) {
             this.doError(cmd);
@@ -95,6 +120,12 @@ class EvolutionMachine {
     }
 
     evolveLine(line) {
+        // Remove comments starting with //, ;, or #
+        line = line.replace(/\/\/.*|;.*|#.*/, '').trim();
+        
+        // Skip empty lines or lines that only contained comments
+        if (!line) return;
+
         const cmdMatch = line.match(/作\s*([^为\s结]+)/);
         const resultMatch = line.match(/结果记作\s*([^\s]+)/);
         
@@ -122,7 +153,7 @@ class EvolutionMachine {
 
         if (this.verbose) {
             const paramsStr = params.map(p => `${p.name}:${p.value}`).join(', ');
-            this.output += `参数列表: [${paramsStr}] 指令: ${cmd}${resultVar ? ` 结果存入: ${resultVar}` : ''}\n`;
+            this.output += `参数列表: [${paramsStr}] 指令: ${cmd}${resultVar ? ` 结果记作: ${resultVar}` : ''}\n`;
         }
 
         this.doCmd(cmd, params, resultVar);
@@ -143,7 +174,7 @@ class EvolutionMachine {
             if (this.verbose) {
                 this.output += '\n';  // Add spacing in verbose mode
             }
-            this.output += '变量表:\n';
+            this.output += '结果:\n';
             for (const [name, value] of Object.entries(this.variables)) {
                 this.output += `${name}: ${value}\n`;
             }

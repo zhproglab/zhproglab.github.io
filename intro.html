@@ -113,42 +113,59 @@
 
         <div class="section">
             <h2>基本语法</h2>
-            <p>系统内部是一个基于模式匹配和转换的自动机器，其基本运行模式，
-                系统把每行字按照空格分成若干个词，
-                对句子的最右侧的词进行模式匹配，如果匹配成功，则将匹配成功的部分进行转换，
-                然后继续对转换后的句子最右侧的词进行匹配和转换，直到无法匹配为止。
-                甲 乙 丙 丁 戊 己 庚 辛 壬 癸 是特殊的关键词，用来表示变量</p>
-                <p>
-                    系统有一些内建模式，目前支持四则运算<br>
-                    甲 加 乙 => 结果<br>
-                    甲 减 乙 => 结果<br>
-                    甲 乘 乙 => 结果<br>
-                    甲 除 乙 => 结果<br>
-                </p>
-                <p>
-                    如果一个行里有 => 则这一行被认为是用户自定义模式转换规则，例如:
-                    计算 甲 和 乙 的和 => 甲 加 乙<br>
-                    阶乘 1 => 1<br>
-                    阶乘 甲 => 甲 乘 阶乘 甲 减 一<br>
-                </p>
-                <p>
-                    如果一个行里没有 => 则系统会对这一行进行推演，并输出推演过程和结果。
-                </p>
+            <p>
+                中文编程使用自然的语序来表达计算逻辑。每个语句都是一个完整的中文句子，描述了运算的过程和结果的记录。比如下面的例子展示了基本的加减运算：
+            </p>
             <div class="code-example">
-把 甲 和 乙 相加 => 甲 加 乙
-
-把 1 和 2 相加
+以3为被减数 以2为减数 作减 结果记作 甲
+以3为被加数 以2为加数 作加 结果记作 乙
+以甲为被乘数 以2为乘数 作乘 结果记作 丙
+以甲为被除数 以2为除数 作除 结果记作 丁
+以5作阶乘 结果记作阶乘结果
+以2为底数 以3为指数 作幂 结果记作幂结果
+以2作指数 结果记作指数结果
             </div>
-        </div>
-
-        <div class="section">
-            <h2>示例程序 - 阶乘</h2>
-            <div class="code-example">
-阶乘 1 => 1
-阶乘 甲 => 甲 乘 阶乘 甲 减 1
-                
-阶乘 4
-            </div>
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background-color: #f5f5f5;">
+                        <th style="padding: 0.5rem; border: 1px solid #ddd; text-align: left;">运算</th>
+                        <th style="padding: 0.5rem; border: 1px solid #ddd; text-align: left;">语法格式</th>
+                        <th style="padding: 0.5rem; border: 1px solid #ddd; text-align: left;">示例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">加法</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以[数]为被加数 以[数]为加数 作加 结果记作 [变量]</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以3为被加数 以2为加数 作加 结果记作 乙</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">减法</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以[数]为被减数 以[数]为减数 作减 结果记作 [变量]</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以3为被减数 以2为减数 作减 结果记作 甲</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">乘法</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以[数]为被乘数 以[数]为乘数 作乘 结果记作 [变量]</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以甲为被乘数 以2为乘数 作乘 结果记作 丙</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">除法</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以[数]为被除数 以[数]为除数 作除 结果记作 [变量]</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以甲为被除数 以2为除数 作除 结果记作 丁</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">阶乘</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以[数]作阶乘 结果记作 [变量]</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以5作阶乘 结果记作 阶乘结果</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">幂运算</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以[数]为底数 以[数]为指数 作幂 结果记作 [变量]</td>
+                        <td style="padding: 0.5rem; border: 1px solid #ddd;">以2为底数 以3为指数 作幂 结果记作 幂结果</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="section">
