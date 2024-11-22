@@ -1,19 +1,150 @@
+const rules = [
+    {
+        'name': '加法',
+        'function': 'doAdd',
+        'mandatory_args': 2,
+        'patterns': [
+            '以 1 为被加数 以 2 为加数 作加法 结果记作 r',
+            '1 加 2 => r',
+            '1 + 2 => r',
+        ]
+    },
+    {
+        'name': '减法',
+        'function': 'doSub',
+        'mandatory_args': 2,
+        'patterns': [
+            '以 1 为被减数 以 2 为减数 作减法 结果记作 r',
+            '1 减 2 => r',
+            '1 - 2 => r',
+        ]
+    },
+    {
+        'name': '乘法',
+        'function': 'doMul',
+        'mandatory_args': 2,
+        'patterns': [
+            '以 1 为被乘数 以 2 为乘数 作乘法 结果记作 r',
+            '1 乘 2 => r',
+            '1 × 2 => r',
+            '1 * 2 => r',
+        ]
+    },
+    {
+        'name': '除法',
+        'function': 'doDiv',
+        'mandatory_args': 2,
+        'patterns': [
+            '以 1 为被除数 以 2 为除数 作除法 结果记作 r',
+            '1 除 2 => r',
+            '1 ÷ 2 => r',
+            '1 / 2 => r',
+        ]
+    },
+    {
+        'name': '阶乘',
+        'function': 'doFactorial',
+        'mandatory_args': 1,
+        'patterns': [
+            '以 1 为参数 作阶乘 结果记作 r',
+            '1 的阶乘 => r',
+            '1! => r',
+        ]
+    },
+    {
+        'name': '幂运算',
+        'function': 'doPower',
+        'mandatory_args': 2,
+        'patterns': [
+            '以 1 为底数 以 2 为指数 作幂运算 结果记作 r',
+            '1 的 2 次幂 => r',
+            '1 ^ 2 => r',
+        ]
+    },
+    {
+        'name': '指数函数',
+        'function': 'doExponent',
+        'mandatory_args': 1,
+        'patterns': [
+            '以 1 为参数 作指数 结果记作 r',
+            'e的 1 次幂 => r',
+            'exp 1 => r',
+        ]
+    }
+]
+
+function matchPattern(input, pattern) {
+    // Trim and normalize input
+    let remainingInput = input.trim();
+    // Split pattern into parts
+    const patternParts = pattern.split(' ');
+    
+    // Store matched values for numbers and result variable
+    const args = [];
+    let resultVar = null;
+    
+    for (const part of patternParts) {
+        // Skip empty parts
+        if (!part) continue;
+        
+        // Trim leading spaces from remaining input
+        remainingInput = remainingInput.trimStart();
+        
+        // If no input left but still have pattern parts, matching failed
+        if (!remainingInput) {
+            console.log(`匹配失败: 没有剩余输入来匹配模式部分 "${part}"`);
+            return null;
+        }
+        
+        if (part.match(/^\d+$/)) { // Match any number placeholder
+            // Match a number or a variable name (anything without spaces)
+            const match = remainingInput.match(/^(\d+|\S+)(\s*)/);
+            if (!match) {
+                console.log(`匹配失败: 输入 "${remainingInput}" 不匹配数字或变量名`);
+                return null;
+            }
+            
+            // Store the matched value as an argument
+            args.push(match[1]);
+            // Remove matched text and trailing spaces from input
+            remainingInput = remainingInput.slice(match[0].length);
+        } else if (part === 'r') { // Match result variable
+            // Match a variable name (anything without spaces)
+            const match = remainingInput.match(/^(\S+)(\s*)/);
+            if (!match) {
+                console.log(`匹配失败: 输入 "${remainingInput}" 不匹配结果变量名`);
+                return null;
+            }
+            
+            // Store the matched value as the result variable
+            resultVar = match[1];
+            // Remove matched text and trailing spaces from input
+            remainingInput = remainingInput.slice(match[0].length);
+        } else {
+            // For exact match parts, check if input starts with this part
+            if (!remainingInput.startsWith(part)) {
+                console.log(`匹配失败: 输入 "${remainingInput}" 不以 "${part}" 开头`);
+                return null;
+            }
+            // Remove matched text from input
+            remainingInput = remainingInput.slice(part.length);
+        }
+    }
+    
+    // If we have remaining input after matching all parts, matching failed
+    if (remainingInput.trim()) {
+        console.log(`匹配失败: 剩余未匹配输入 "${remainingInput}"`);
+        return null;
+    }
+    
+    return { args, resultVar };
+}
+
+
 class EvolutionMachine {
     constructor() {
         this.lines = [];
         this.variables = {};
-        this.DEBUG_PARAM_SORTING = false;
-
-        this.cmds = {
-            '加': this.doAdd.bind(this),
-            '减': this.doSub.bind(this),
-            '乘': this.doMul.bind(this),
-            '除': this.doDiv.bind(this),
-            '阶乘': this.doFactorial.bind(this),
-            '幂': this.doPower.bind(this),
-            '指数': this.doExponent.bind(this),
-        }
-
     }
 
     setVar(name, value) {
@@ -37,54 +168,41 @@ class EvolutionMachine {
         }
         
         const param = params[0];
-        const num = Number(param.value);
-        const value = !isNaN(num) ? num : this.getVar(param.value);
+        const num = Number(param);
+        const value = !isNaN(num) ? num : this.getVar(param);
         
         return operation(value);
     }
 
     // Helper function to handle binary operations
-    doBinaryOp(params, operation, paramMapping) {
-        if (this.DEBUG_PARAM_SORTING) {
-            this.output += `原始参数: ${JSON.stringify(params)}\n`;
+    doBinaryOp(params, operation) {
+        if (params.length !== 2) {
+            throw new Error('双参数操作需要且仅需要两个参数');
         }
         
-        // Create a map of parameter names to values
-        const paramValues = {};
-        params.forEach(p => {
-            const num = Number(p.value);
-            paramValues[p.name] = !isNaN(num) ? num : this.getVar(p.value);
+        const values = params.map(param => {
+            const num = Number(param);
+            return !isNaN(num) ? num : this.getVar(param);
         });
 
-        // Map the parameters to their expected positions using paramMapping
-        const orderedValues = paramMapping.map(paramName => {
-            if (!(paramName in paramValues)) {
-                throw new Error(`缺少必需参数: ${paramName}`);
-            }
-            return paramValues[paramName];
-        });
-
-        return operation(orderedValues);
+        return operation(values);
     }
 
     doAdd(params) {
         return this.doBinaryOp(params, 
-            nums => nums.reduce((sum, num) => sum + num, 0),
-            ['被加数', '加数']
+            nums => nums.reduce((sum, num) => sum + num, 0)
         );
     }
 
     doSub(params) {
         return this.doBinaryOp(params, 
-            nums => nums[0] - nums[1],
-            ['被减数', '减数']
+            nums => nums[0] - nums[1]
         );
     }
 
     doMul(params) {
         return this.doBinaryOp(params, 
-            nums => nums.reduce((product, num) => product * num, 1),
-            ['被乘数', '乘数']
+            nums => nums.reduce((product, num) => product * num, 1)
         );
     }
 
@@ -95,8 +213,7 @@ class EvolutionMachine {
                     throw new Error('除数不能为零');
                 }
                 return nums[0] / nums[1];
-            },
-            ['被除数', '除数']
+            }
         );
     }
 
@@ -117,8 +234,7 @@ class EvolutionMachine {
             nums => {
                 if (nums[0] === 0 && nums[1] < 0) throw new Error('零的负数次幂未定义');
                 return Math.pow(nums[0], nums[1]);
-            },
-            ['底数', '指数']
+            }
         );
     }
 
@@ -129,10 +245,10 @@ class EvolutionMachine {
     }
 
     doCmd(cmd, params, resultVar) {
-        if (!this.cmds[cmd]) {
-            this.doError(cmd);
+        if (typeof this[cmd] !== 'function') {
+            throw new Error(`未定义的命令: ${cmd}`);
         } else {
-            const result = this.cmds[cmd](params);
+            const result = this[cmd](params);
             if (resultVar) {
                 this.setVar(resultVar, result);
             }
@@ -149,37 +265,41 @@ class EvolutionMachine {
         // Skip empty lines or lines that only contained comments
         if (!line) return;
 
-        const cmdMatch = line.match(/作\s*([^为\s结]+)/);
-        const resultMatch = line.match(/结果记作\s*([^\s]+)/);
-        
-        if (!cmdMatch) return;
-        const cmd = cmdMatch[1];
-        const resultVar = resultMatch ? resultMatch[1] : null;
-
-        let params = [];
-        const lineWithoutResult = line.replace(/结果记作\s*([^\s]+)/, '');
-        
-        if (lineWithoutResult.includes('为')) {
-            const paramPairs = lineWithoutResult.match(/以\s*([^为\s]+)\s*为\s*([^以作\s]+)/g);
-            if (paramPairs) {
-                params = paramPairs.map(pair => {
-                    const [_, value, name] = pair.match(/以\s*([^为\s]+)\s*为\s*([^以作\s]+)/);
-                    return {name: name.trim(), value: value.trim()};
-                });
-            }
-        } else {
-            const singleParam = lineWithoutResult.match(/以\s*([^作\s]+)/);
-            if (singleParam) {
-                params = [{name: '参数', value: singleParam[1].trim()}];
-            }
-        }
-
         if (this.verbose) {
-            const paramsStr = params.map(p => `${p.name}:${p.value}`).join(', ');
-            this.output += `参数列表: [${paramsStr}] 指令: ${cmd}${resultVar ? ` 结果记作: ${resultVar}` : ''}\n`;
+            this.output += `处理行: ${line}\n`;
         }
 
-        this.doCmd(cmd, params, resultVar);
+        for (const rule of rules) {
+            if (this.verbose) {
+                this.output += `尝试规则: ${rule.name}\n`;
+            }
+            for (const pattern of rule.patterns) {
+                if (this.verbose) {
+                    this.output += `尝试模式: ${pattern}\n`;
+                }
+                const matchResult = matchPattern(line, pattern);
+                if (matchResult) {
+                    const { args, resultVar } = matchResult;
+                    
+                    // Check if the number of arguments matches the rule's mandatory_args
+                    if (args.length !== rule.mandatory_args) {
+                        throw new Error(`参数数量不匹配: 需要 ${rule.mandatory_args} 个参数, 但找到 ${args.length} 个`);
+                    }
+                    
+                    // Add debug message for matched pattern
+                    if (this.verbose) {
+                        this.output += `匹配成功: ${pattern}\n`;
+                        this.output += `参数: ${JSON.stringify(args)}\n`;
+                        this.output += `结果变量: ${resultVar}\n`;
+                    }
+                    
+                    this.doCmd(rule.function, args, resultVar);
+                    return; // Exit after the first successful match
+                }
+            }
+        }
+
+        throw new Error(`无法匹配的行: ${line}`);
     }
 
     evolve(input, verbose = false) {
@@ -209,4 +329,12 @@ class EvolutionMachine {
 
 // Test the implementation
 const machine = new EvolutionMachine();
-console.log(machine.evolve("以1为被加数 以2为加数 作加 结果记作总数", ""));
+console.log(machine.evolve("以1为被加数 以 2 为加数 作加法 结果记作总数", ""));
+
+// Example Input
+/*
+以1为被加数 以2为加数 作加 结果记作总数甲
+以1为被加数 以2为加数 作加法 结果记作总数乙
+1 加 2 => 总数丙
+1 + 2 => 总数丁
+*/
