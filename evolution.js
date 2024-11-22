@@ -30,82 +30,102 @@ class EvolutionMachine {
         return this.variables[name];
     }
 
+    // Helper function to handle unary operations
+    doUnaryOp(params, operation) {
+        if (params.length !== 1) {
+            throw new Error('单参数操作需要且仅需要一个参数');
+        }
+        
+        const param = params[0];
+        const num = Number(param.value);
+        const value = !isNaN(num) ? num : this.getVar(param.value);
+        
+        return operation(value);
+    }
+
     // Helper function to handle binary operations
-    doBinaryOp(params, operation) {
+    doBinaryOp(params, operation, paramMapping) {
         if (this.DEBUG_PARAM_SORTING) {
             this.output += `原始参数: ${JSON.stringify(params)}\n`;
         }
         
-        const numbers = params.map(p => {
+        // Create a map of parameter names to values
+        const paramValues = {};
+        params.forEach(p => {
             const num = Number(p.value);
-            if (!isNaN(num)) {
-                return { 
-                    value: num, 
-                    isLeft: p.name.startsWith('被')
-                };
-            }
-            return { 
-                value: this.getVar(p.value), 
-                isLeft: p.name.startsWith('被')
-            };
+            paramValues[p.name] = !isNaN(num) ? num : this.getVar(p.value);
         });
 
-        numbers.sort((a, b) => {
-            if (a.isLeft) return -1;
-            if (b.isLeft) return 1;
-            return 0;
+        // Map the parameters to their expected positions using paramMapping
+        const orderedValues = paramMapping.map(paramName => {
+            if (!(paramName in paramValues)) {
+                throw new Error(`缺少必需参数: ${paramName}`);
+            }
+            return paramValues[paramName];
         });
-        
-        if (this.DEBUG_PARAM_SORTING) {
-            const debugNums = numbers.map(n => `${n.isLeft ? '被' : ''}:${n.value}`);
-            this.output += `排序后: [${debugNums.join(', ')}]\n`;
-        }
-        
-        const sortedNums = numbers.map(n => n.value);
-        return operation(sortedNums);
+
+        return operation(orderedValues);
     }
 
     doAdd(params) {
-        return this.doBinaryOp(params, nums => nums.reduce((sum, num) => sum + num, 0));
+        return this.doBinaryOp(params, 
+            nums => nums.reduce((sum, num) => sum + num, 0),
+            ['被加数', '加数']
+        );
     }
 
     doSub(params) {
-        return this.doBinaryOp(params, nums => nums[0] - nums[1]);
+        return this.doBinaryOp(params, 
+            nums => nums[0] - nums[1],
+            ['被减数', '减数']
+        );
     }
 
     doMul(params) {
-        return this.doBinaryOp(params, nums => nums.reduce((product, num) => product * num, 1));
+        return this.doBinaryOp(params, 
+            nums => nums.reduce((product, num) => product * num, 1),
+            ['被乘数', '乘数']
+        );
     }
 
     doDiv(params) {
-        return this.doBinaryOp(params, nums => {
-            if (nums[1] === 0) {
-                throw new Error('除数不能为零');
-            }
-            return nums[0] / nums[1];
-        });
+        return this.doBinaryOp(params, 
+            nums => {
+                if (nums[1] === 0) {
+                    throw new Error('除数不能为零');
+                }
+                return nums[0] / nums[1];
+            },
+            ['被除数', '除数']
+        );
     }
 
     doFactorial(params) {
-        return this.doBinaryOp(params, nums => {
-            const n = nums[0];
-            if (n < 0) throw new Error('阶乘不能为负数');
-            if (!Number.isInteger(n)) throw new Error('阶乘必须为整数');
-            let result = 1;
-            for (let i = 2; i <= n; i++) result *= i;
-            return result;
-        });
+        return this.doUnaryOp(params, 
+            n => {
+                if (n < 0) throw new Error('阶乘不能为负数');
+                if (!Number.isInteger(n)) throw new Error('阶乘必须为整数');
+                let result = 1;
+                for (let i = 2; i <= n; i++) result *= i;
+                return result;
+            }
+        );
     }
 
     doPower(params) {
-        return this.doBinaryOp(params, nums => {
-            if (nums[0] === 0 && nums[1] < 0) throw new Error('零的负数次幂未定义');
-            return Math.pow(nums[0], nums[1]);
-        });
+        return this.doBinaryOp(params, 
+            nums => {
+                if (nums[0] === 0 && nums[1] < 0) throw new Error('零的负数次幂未定义');
+                return Math.pow(nums[0], nums[1]);
+            },
+            ['底数', '指数']
+        );
     }
 
     doExponent(params) {
-        return this.doBinaryOp(params, nums => Math.exp(nums[0]));
+        return this.doUnaryOp(params, 
+            n => Math.exp(n)
+        );
     }
 
     doCmd(cmd, params, resultVar) {
@@ -122,6 +142,9 @@ class EvolutionMachine {
     evolveLine(line) {
         // Remove comments starting with //, ;, or #
         line = line.replace(/\/\/.*|;.*|#.*/, '').trim();
+        
+        // Replace punctuation marks with spaces
+        line = line.replace(/[.,。，;；]/g, ' ').trim();
         
         // Skip empty lines or lines that only contained comments
         if (!line) return;
