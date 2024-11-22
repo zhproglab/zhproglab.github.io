@@ -1,207 +1,158 @@
 class EvolutionMachine {
     constructor() {
-        this.stack = [];
-        this.builtinRules = {
-            '加': (a, b) => a + b,
-            '减': (a, b) => a - b,
-            '乘': (a, b) => a * b,
-            '除': (a, b) => a / b
-        };
-        this.customRules = [];
+        this.lines = [];
+        this.variables = {};
+        this.DEBUG_PARAM_SORTING = false;
+
+        this.cmds = {
+            '加': this.doAdd.bind(this),
+            '减': this.doSub.bind(this),
+            '乘': this.doMul.bind(this),
+            '除': this.doDiv.bind(this),
+        }
+
     }
 
-    parseRules(input) {
-        const lines = input.split('\n').map(line => line.trim()).filter(line => line);
-        for (const line of lines) {
-            if (line.includes('=>')) {
-                const [pattern, transform] = line.split('=>').map(s => s.trim());
-                this.addRule(pattern, transform);
-            }
+    setVar(name, value) {
+        this.variables[name] = value;
+        if (this.verbose) {
+            this.output += `变量赋值: ${name} = ${value}\n`;
         }
     }
 
-    addRule(pattern, transform) {
-        // Convert pattern and transform to token arrays
-        const patternTokens = pattern.split(' ');
-        const transformTokens = transform.split(' ');
-        this.customRules.push({ pattern: patternTokens, transform: transformTokens });
-    }
-
-    isVariable(token) {
-        return /^[甲乙丙丁戊己庚辛壬癸]$/.test(token);
-    }
-
-    isValue(token) {
-        return !isNaN(parseFloat(token)) || 
-               (typeof token === 'string' && !this.isVariable(token));
-    }
-
-    matchPattern(pattern) {
-        if (this.stack.length < pattern.length) return false;
-        
-        const variables = {};
-        const stackSlice = this.stack.slice(-pattern.length);
-
-        for (let i = 0; i < pattern.length; i++) {
-            const patternToken = pattern[i];
-            const stackToken = stackSlice[i];
-
-            if (this.isVariable(patternToken)) {
-                // Pattern token is a variable, can match any value or variable
-                if (variables[patternToken]) {
-                    // If we've seen this variable before, it must match
-                    if (variables[patternToken] !== stackToken) {
-                        return false;
-                    }
-                } else {
-                    // First time seeing this variable, store the match
-                    variables[patternToken] = stackToken;
-                }
-            } else if (patternToken !== stackToken) {
-                // Non-variable tokens must match exactly
-                return false;
-            }
+    getVar(name) {
+        if (!(name in this.variables)) {
+            throw new Error(`未定义的变量: ${name}`);
         }
-
-        return variables;
+        return this.variables[name];
     }
 
-    applyTransform(transform, variables) {
-        const result = [];
-        for (const token of transform) {
-            if (token in variables) {
-                result.push(variables[token]);
-            } else {
-                result.push(token);
-            }
-        }
-        return result;
-    }
-
-    processBuiltinRule() {
-        // Need at least 3 tokens for pattern "甲 操作符 乙"
-        if (this.stack.length < 3) return false;
-
-        // Get the last 3 tokens
-        const lastThree = this.stack.slice(-3);
-        const [a, operator, b] = lastThree;
-
-        // Check if middle token is an operator
-        if (operator in this.builtinRules) {
-            // Try to parse the numbers
-            const numA = parseFloat(a);
-            const numB = parseFloat(b);
-
-            // Check if both tokens are valid numbers
-            if (!isNaN(numA) && !isNaN(numB)) {
-                // Remove the 3 tokens
-                this.stack.splice(-3);
-                
-                // Calculate and push result
-                const result = this.builtinRules[operator](numA, numB);
-                this.stack.push(result.toString());
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    matchCustomRules() {
-        for (const rule of this.customRules) {
-            const variables = this.matchPattern(rule.pattern);
-            if (variables) {
-                // Remove matched tokens
-                this.stack.splice(-rule.pattern.length);
-                // Apply transform
-                const transformed = this.applyTransform(rule.transform, variables);
-                this.stack.push(...transformed);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    evolveExpression(tokens) {
-        this.stack = [];
-        const steps = [tokens.join(' ')];
-        
-        // Process each token
-        for (const token of tokens) {
-            this.stack.push(token);
-            
-            // Keep trying to apply rules until no more matches
-            let ruleApplied;
-            do {
-                ruleApplied = false;
-                if (this.processBuiltinRule()) {
-                    ruleApplied = true;
-                    steps.push(this.stack.join(' '));
-                } else if (this.matchCustomRules()) {
-                    ruleApplied = true;
-                    steps.push(this.stack.join(' '));
-                }
-            } while (ruleApplied);
+    // Helper function to handle binary operations
+    doBinaryOp(params, operation) {
+        if (this.DEBUG_PARAM_SORTING) {
+            this.output += `原始参数: ${JSON.stringify(params)}\n`;
         }
         
-        return steps;
+        const numbers = params.map(p => {
+            const num = Number(p.value);
+            if (!isNaN(num)) {
+                return { 
+                    value: num, 
+                    isLeft: p.name.startsWith('被')
+                };
+            }
+            return { 
+                value: this.getVar(p.value), 
+                isLeft: p.name.startsWith('被')
+            };
+        });
+
+        numbers.sort((a, b) => {
+            if (a.isLeft) return -1;
+            if (b.isLeft) return 1;
+            return 0;
+        });
+        
+        if (this.DEBUG_PARAM_SORTING) {
+            const debugNums = numbers.map(n => `${n.isLeft ? '被' : ''}:${n.value}`);
+            this.output += `排序后: [${debugNums.join(', ')}]\n`;
+        }
+        
+        const sortedNums = numbers.map(n => n.value);
+        return operation(sortedNums);
     }
 
-    evolve(input) {
-        // Process each line
-        const lines = input.split('\n').map(line => line.trim()).filter(line => line);
-        const results = [];
+    doAdd(params) {
+        return this.doBinaryOp(params, nums => nums.reduce((sum, num) => sum + num, 0));
+    }
 
-        for (const line of lines) {
-            if (line.includes('=>')) {
-                // Process as rule definition
-                const [pattern, transform] = line.split('=>').map(s => s.trim());
-                this.addRule(pattern, transform);
-            } else {
-                // Process as evolution input
-                const tokens = line.split(' ');
-                const steps = this.evolveExpression(tokens);
-                
-                // Format steps with arrows
-                results.push(steps.join(' =>\n'));
+    doSub(params) {
+        return this.doBinaryOp(params, nums => nums[0] - nums[1]);
+    }
+
+    doMul(params) {
+        return this.doBinaryOp(params, nums => nums.reduce((product, num) => product * num, 1));
+    }
+
+    doDiv(params) {
+        return this.doBinaryOp(params, nums => {
+            if (nums[1] === 0) {
+                throw new Error('除数不能为零');
+            }
+            return nums[0] / nums[1];
+        });
+    }
+
+    doCmd(cmd, params, resultVar) {
+        if (!this.cmds[cmd]) {
+            this.doError(cmd);
+        } else {
+            const result = this.cmds[cmd](params);
+            if (resultVar) {
+                this.setVar(resultVar, result);
+            }
+        }
+    }
+
+    evolveLine(line) {
+        const cmdMatch = line.match(/作\s*([^为\s结]+)/);
+        const resultMatch = line.match(/结果记作\s*([^\s]+)/);
+        
+        if (!cmdMatch) return;
+        const cmd = cmdMatch[1];
+        const resultVar = resultMatch ? resultMatch[1] : null;
+
+        let params = [];
+        const lineWithoutResult = line.replace(/结果记作\s*([^\s]+)/, '');
+        
+        if (lineWithoutResult.includes('为')) {
+            const paramPairs = lineWithoutResult.match(/以\s*([^为\s]+)\s*为\s*([^以作\s]+)/g);
+            if (paramPairs) {
+                params = paramPairs.map(pair => {
+                    const [_, value, name] = pair.match(/以\s*([^为\s]+)\s*为\s*([^以作\s]+)/);
+                    return {name: name.trim(), value: value.trim()};
+                });
+            }
+        } else {
+            const singleParam = lineWithoutResult.match(/以\s*([^作\s]+)/);
+            if (singleParam) {
+                params = [{name: '参数', value: singleParam[1].trim()}];
             }
         }
 
-        return results.join('\n');
+        if (this.verbose) {
+            const paramsStr = params.map(p => `${p.name}:${p.value}`).join(', ');
+            this.output += `参数列表: [${paramsStr}] 指令: ${cmd}${resultVar ? ` 结果存入: ${resultVar}` : ''}\n`;
+        }
+
+        this.doCmd(cmd, params, resultVar);
+    }
+
+    evolve(input, verbose = false) {
+        this.output = '';
+        this.variables = {};
+        this.verbose = verbose;  // Store verbose setting
+        this.lines = input.split('\n');
+
+        for (let line of this.lines) {
+            this.evolveLine(line);
+        }
+
+        // Always show variable table, even in non-verbose mode
+        if (Object.keys(this.variables).length > 0) {
+            if (this.verbose) {
+                this.output += '\n';  // Add spacing in verbose mode
+            }
+            this.output += '变量表:\n';
+            for (const [name, value] of Object.entries(this.variables)) {
+                this.output += `${name}: ${value}\n`;
+            }
+        }
+
+        return this.output;
     }
 }
 
 // Test the implementation
 const machine = new EvolutionMachine();
-
-// Test case 1: Addition rules
-const test1 = `
-把 甲 和 乙 相加 => 甲 加 乙
-计算 甲 和 乙 的和 => 甲 加 乙
-
-把 1 和 2 相加
-`;
-
-// console.log(machine.evolve(test1)); // 输出: 3
-
-// Test case 2: Factorial rule
-const test2 = `
-阶乘 1 => 1
-阶乘 甲 => 甲 乘 阶乘 甲 减 1
-
-阶乘 4
-`;
-
-//console.log(machine.evolve(test2)); // 输出: 6
-
-const test = `
-计算 甲 和 乙 的和 => 甲 加 乙
-
-计算 1 和 2 的和
-`;
-
-// console.log(machine.evolve(test));
-
-// 输出:
-// 1 加 2 => 计算 1 和 2 的和 => 1 加 2 => 3
-// x 加 y => 计算 x 和 y 的和 => x 加 y
+console.log(machine.evolve("以1为被加数 以2为加数 作加 结果记作总数", ""));
