@@ -60,16 +60,6 @@ const rules = [
             '1 的 2 次幂 => r',
             '1 ^ 2 => r',
         ]
-    },
-    {
-        'name': '指数函数',
-        'function': 'doExponent',
-        'mandatory_args': 1,
-        'patterns': [
-            '以 1 为参数 作指数 结果记作 r',
-            'e的 1 次幂 => r',
-            'exp 1 => r',
-        ]
     }
 ]
 
@@ -235,12 +225,6 @@ class EvolutionMachine {
                 if (nums[0] === 0 && nums[1] < 0) throw new Error('零的负数次幂未定义');
                 return Math.pow(nums[0], nums[1]);
             }
-        );
-    }
-
-    doExponent(params) {
-        return this.doUnaryOp(params, 
-            n => Math.exp(n)
         );
     }
 
