@@ -75,12 +75,13 @@
 
         .code-example {
             background-color: #f5f5f5;
-            padding: 1rem;
+            padding: 0.5rem;
             border-radius: 5px;
-            font-family: monospace;
-            margin: 1rem 0;
+            font-family: "Courier New", Courier, monospace;
+            margin: 0.5rem 0;
             white-space: pre;
             overflow-x: auto;
+            font-size: 1rem;
         }
 
         .back-button {
@@ -118,21 +119,14 @@
         <div class="section">
             <h2>语法介绍</h2>
             <p>在LISP中，代码和数据都是以列表的形式表示。以下是一个简单的LISP表达式：</p>
-            <div class="code-example">
-                (print "你好，世界！")
-            </div>
+            <div class="code-example">(print "你好，世界！")</div>
             <p>上面的代码将输出“你好，世界！”。LISP使用前缀表示法，这意味着操作符在操作数之前。</p>
         </div>
 
         <div class="section">
             <h2>示例代码</h2>
             <p>以下是一个使用中文关键词的LISP程序示例：</p>
-            <div class="code-example">
-                (定义 (阶乘 n)
-                    (如果 (<= n 1)
-                        1
-                        (* n (阶乘 (- n 1)))))
-            </div>
+            <div class="code-example">(定义 (阶乘 n) (如果 (<= n 1) 1 (* n (阶乘 (- n 1)))))</div>
             <p>这个程序定义了一个计算阶乘的函数。注意使用了中文关键词“定义”、“如果”等。</p>
         </div>
 
@@ -141,139 +135,85 @@
             <p>以下是中文编程实验室中LISP支持的中文关键词及其对应的功能和示例代码：</p>
             <ul>
                 <li><strong>定义</strong>: 用于定义变量或函数。
-                    <div class="code-example">
-                        (定义 x 10)
-                    </div>
+                    <div class="code-example">(定义 x 10)</div>
                 </li>
                 <li><strong>令</strong>: 用于创建局部变量。
-                    <div class="code-example">
-                        (令 ((x 10) (y 20)) (+ x y))
-                    </div>
+                    <div class="code-example">(令 ((x 10) (y 20)) (+ x y))</div>
                 </li>
                 <li><strong>函数</strong>: 用于定义匿名函数。
-                    <div class="code-example">
-                        ((函数 (x) (* x x)) 5)
-                    </div>
+                    <div class="code-example">((函数 (x) (* x x)) 5)</div>
                 </li>
                 <li><strong>定义函数</strong>: 用于定义命名函数。
-                    <div class="code-example">
-                        (定义函数 (平方 x) (* x x))
-                    </div>
+                    <div class="code-example">(定义函数 (平方 x) (* x x))</div>
                 </li>
                 <li><strong>加</strong>: 执行加法运算。
-                    <div class="code-example">
-                        (加 1 2 3)
-                    </div>
+                    <div class="code-example">(加 1 2 3)</div>
                 </li>
                 <li><strong>减</strong>: 执行减法运算。
-                    <div class="code-example">
-                        (减 10 5)
-                    </div>
+                    <div class="code-example">(减 10 5)</div>
                 </li>
                 <li><strong>乘</strong>: 执行乘法运算。
-                    <div class="code-example">
-                        (乘 2 3 4)
-                    </div>
+                    <div class="code-example">(乘 2 3 4)</div>
                 </li>
                 <li><strong>除</strong>: 执行除法运算。
-                    <div class="code-example">
-                        (除 10 2)
-                    </div>
+                    <div class="code-example">(除 10 2)</div>
                 </li>
                 <li><strong>如果</strong>: 用于条件判断。
-                    <div class="code-example">
-                        (如果 (> 10 5) "大" "小")
-                    </div>
+                    <div class="code-example">(如果 (> 10 5) "大" "小")</div>
                 </li>
                 <li><strong>绝对值</strong>: 计算绝对值。
-                    <div class="code-example">
-                        (绝对值 -10)
-                    </div>
+                    <div class="code-example">(绝对值 -10)</div>
                 </li>
                 <li><strong>反余弦</strong>: 计算反余弦值。
-                    <div class="code-example">
-                        (反余弦 0.5)
-                    </div>
+                    <div class="code-example">(反余弦 0.5)</div>
                 </li>
                 <li><strong>反正弦</strong>: 计算反正弦值。
-                    <div class="code-example">
-                        (反正弦 0.5)
-                    </div>
+                    <div class="code-example">(反正弦 0.5)</div>
                 </li>
                 <li><strong>反正切</strong>: 计算反正切值。
-                    <div class="code-example">
-                        (反正切 1)
-                    </div>
+                    <div class="code-example">(反正切 1)</div>
                 </li>
                 <li><strong>反正切2</strong>: 计算反正切值，考虑象限。
-                    <div class="code-example">
-                        (反正切2 1 1)
-                    </div>
+                    <div class="code-example">(反正切2 1 1)</div>
                 </li>
                 <li><strong>向上取整</strong>: 向上取整。
-                    <div class="code-example">
-                        (向上取整 4.3)
-                    </div>
+                    <div class="code-example">(向上取整 4.3)</div>
                 </li>
                 <li><strong>余弦</strong>: 计算余弦值。
-                    <div class="code-example">
-                        (余弦 0)
-                    </div>
+                    <div class="code-example">(余弦 0)</div>
                 </li>
                 <li><strong>指数</strong>: 计算指数。
-                    <div class="code-example">
-                        (指数 1)
-                    </div>
+                    <div class="code-example">(指数 1)</div>
                 </li>
                 <li><strong>向下取整</strong>: 向下取整。
-                    <div class="code-example">
-                        (向下取整 4.7)
-                    </div>
+                    <div class="code-example">(向下取整 4.7)</div>
                 </li>
                 <li><strong>对数</strong>: 计算对数。
-                    <div class="code-example">
-                        (对数 10)
-                    </div>
+                    <div class="code-example">(对数 10)</div>
                 </li>
                 <li><strong>最大值</strong>: 计算最大值。
-                    <div class="code-example">
-                        (最大值 1 2 3)
-                    </div>
+                    <div class="code-example">(最大值 1 2 3)</div>
                 </li>
                 <li><strong>最小值</strong>: 计算最小值。
-                    <div class="code-example">
-                        (最小值 1 2 3)
-                    </div>
+                    <div class="code-example">(最小值 1 2 3)</div>
                 </li>
                 <li><strong>幂</strong>: 计算幂。
-                    <div class="code-example">
-                        (幂 2 3)
-                    </div>
+                    <div class="code-example">(幂 2 3)</div>
                 </li>
                 <li><strong>随机</strong>: 生成随机数。
-                    <div class="code-example">
-                        (随机)
-                    </div>
+                    <div class="code-example">(随机)</div>
                 </li>
                 <li><strong>四舍五入</strong>: 四舍五入。
-                    <div class="code-example">
-                        (四舍五入 4.5)
-                    </div>
+                    <div class="code-example">(四舍五入 4.5)</div>
                 </li>
                 <li><strong>正弦</strong>: 计算正弦值。
-                    <div class="code-example">
-                        (正弦 0)
-                    </div>
+                    <div class="code-example">(正弦 0)</div>
                 </li>
                 <li><strong>平方根</strong>: 计算平方根。
-                    <div class="code-example">
-                        (平方根 9)
-                    </div>
+                    <div class="code-example">(平方根 9)</div>
                 </li>
                 <li><strong>正切</strong>: 计算正切值。
-                    <div class="code-example">
-                        (正切 0)
-                    </div>
+                    <div class="code-example">(正切 0)</div>
                 </li>
             </ul>
         </div>
