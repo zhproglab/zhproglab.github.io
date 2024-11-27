@@ -106,129 +106,176 @@
     </nav>
 
     <div class="content">
-        <div class="section">
-            <h2>什么是中文编程？</h2>
-            <p>我们不是把某种编程语言汉化，而是基于中文本身的特征，探索一种新的编程范式。我等道行有限，不敢奢望开天辟地，只求抛砖引玉。</p>
-        </div>
-
-        <div class="section">
-            <h2>基本语法</h2>
-            <p>
-                中文编程使用自然的语序来表达计算逻辑。每个语句都是一个完整的中文句子，描述了运算的过程和结果的记录。比如下面的例子展示了基本的运算：
-            </p>
-            <p>
-                <strong>标点符号说明：</strong>所有的标点符号（包括 . , 。，; ；）均被视作空格处理，您可以根据书写习惯自由使用这些标点。
-            </p>
-            <div class="code-example">
-以3为被减数 以2为减数 作减 结果记作 甲
-以3为被加数 以2为加数 作加 结果记作 乙
-以甲为被乘数 以2为乘数 作乘 结果记作 丙
-以甲为被除数 以2为除数 作除 结果记作 丁
-以5作阶乘，结果记作阶乘结果
-以2为底数，以3为指数，作幂，结果记作幂结果
-以2作指数，结果记作指数结果
-1 加 2 => 结果
-1 + 2 => 结果
-            </div>
-            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
-                <thead>
-                    <tr style="background-color: #f5f5f5;">
-                        <th style="padding: 0.5rem; border: 1px solid #ddd; text-align: left;">运算</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd; text-align: left;">语法格式</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd; text-align: left;">示例</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">加法</td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以[数或变量]为被加数 以[数或变量]为加数 作加法 结果记作 [变量]<br>
-                            [数或变量] 加 [数或变量] => [变量]<br>
-                            [数或变量] + [数或变量] => [变量]
-                        </td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以3为被加数 以2为加数 作加法 结果记作 乙<br>
-                            1 加 2 => 结果<br>
-                            1 + 2 => 结果
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">减法</td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以[数或变量]为被减数 以[数或变量]为减数 作减法 结果记作 [变量]<br>
-                            [数或变量] 减 [数或变量] => [变量]<br>
-                            [数或变量] - [数或变量] => [变量]
-                        </td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以3为被减数 以2为减数 作减法 结果记作 甲<br>
-                            3 减 2 => 结果<br>
-                            3 - 2 => 结果
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">乘法</td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以[数或变量]为被乘数 以[数或变量]为乘数 作乘法 结果记作 [变量]<br>
-                            [数或变量] 乘 [数或变量] => [变量]<br>
-                            [数或变量] × [数或变量] => [变量]<br>
-                            [数或变量] * [数或变量] => [变量]
-                        </td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以甲为被乘数 以2为乘数 作乘法 结果记作 丙<br>
-                            3 乘 2 => 结果<br>
-                            3 × 2 => 结果<br>
-                            3 * 2 => 结果
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">除法</td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以[数或变量]为被除数 以[数或变量]为除数 作除法 结果记作 [变量]<br>
-                            [数或变量] 除 [数或变量] => [变量]<br>
-                            [数或变量] ÷ [数或变量] => [变量]<br>
-                            [数或变量] / [数或变量] => [变量]
-                        </td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以甲为被除数 以2为除数 作除法 结果记作 丁<br>
-                            6 除 2 => 结果<br>
-                            6 ÷ 2 => 结果<br>
-                            6 / 2 => 结果
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">阶乘</td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以[数或变量]为参数 作阶乘 结果记作 [变量]<br>
-                            [数或变量] 的阶乘 => [变量]<br>
-                            [数或变量]! => [变量]
-                        </td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以5为参数 作阶乘 结果记作 阶乘结果<br>
-                            5 的阶乘 => 结果<br>
-                            5! => 结果
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">幂运算</td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以[数或变量]为底数 以[数或变量]为指数 作幂运算 结果记作 [变量]<br>
-                            [数或变量] 的 [数或变量] 次幂 => [变量]<br>
-                            [数或变量] ^ [数或变量] => [变量]
-                        </td>
-                        <td style="padding: 0.5rem; border: 1px solid #ddd;">
-                            以2为底数 以3为指数 作幂运算 结果记作 幂结果<br>
-                            2 的 3 次幂 => 结果<br>
-                            2 ^ 3 => 结果
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        
 
         <div class="section">
             <h2>开始使用</h2>
-            <p>点击下方按钮返回实验室，开始编写您的第一个中文程序！</p>
+            <p>欢迎来到中文编程实验室！我们全新改写的解释器现已兼容LISP，并支持中文关键词。这意味着您可以使用中文编写LISP程序，享受更自然的编程体验。</p>
+            <p>点击下方按钮返回实验室，开始编写您的第一个中文LISP程序！</p>
             <a href="lab.html" class="back-button">返回实验室</a>
+        </div>
+
+        <div class="section">
+            <h2>语法介绍</h2>
+            <p>在LISP中，代码和数据都是以列表的形式表示。以下是一个简单的LISP表达式：</p>
+            <div class="code-example">
+                (print "你好，世界！")
+            </div>
+            <p>上面的代码将输出“你好，世界！”。LISP使用前缀表示法，这意味着操作符在操作数之前。</p>
+        </div>
+
+        <div class="section">
+            <h2>示例代码</h2>
+            <p>以下是一个使用中文关键词的LISP程序示例：</p>
+            <div class="code-example">
+                (定义 (阶乘 n)
+                    (如果 (<= n 1)
+                        1
+                        (* n (阶乘 (- n 1)))))
+            </div>
+            <p>这个程序定义了一个计算阶乘的函数。注意使用了中文关键词“定义”、“如果”等。</p>
+        </div>
+
+        <div class="section">
+            <h2>关键词介绍</h2>
+            <p>以下是中文编程实验室中LISP支持的中文关键词及其对应的功能和示例代码：</p>
+            <ul>
+                <li><strong>定义</strong>: 用于定义变量或函数。
+                    <div class="code-example">
+                        (定义 x 10)
+                    </div>
+                </li>
+                <li><strong>令</strong>: 用于创建局部变量。
+                    <div class="code-example">
+                        (令 ((x 10) (y 20)) (+ x y))
+                    </div>
+                </li>
+                <li><strong>函数</strong>: 用于定义匿名函数。
+                    <div class="code-example">
+                        ((函数 (x) (* x x)) 5)
+                    </div>
+                </li>
+                <li><strong>定义函数</strong>: 用于定义命名函数。
+                    <div class="code-example">
+                        (定义函数 (平方 x) (* x x))
+                    </div>
+                </li>
+                <li><strong>加</strong>: 执行加法运算。
+                    <div class="code-example">
+                        (加 1 2 3)
+                    </div>
+                </li>
+                <li><strong>减</strong>: 执行减法运算。
+                    <div class="code-example">
+                        (减 10 5)
+                    </div>
+                </li>
+                <li><strong>乘</strong>: 执行乘法运算。
+                    <div class="code-example">
+                        (乘 2 3 4)
+                    </div>
+                </li>
+                <li><strong>除</strong>: 执行除法运算。
+                    <div class="code-example">
+                        (除 10 2)
+                    </div>
+                </li>
+                <li><strong>如果</strong>: 用于条件判断。
+                    <div class="code-example">
+                        (如果 (> 10 5) "大" "小")
+                    </div>
+                </li>
+                <li><strong>绝对值</strong>: 计算绝对值。
+                    <div class="code-example">
+                        (绝对值 -10)
+                    </div>
+                </li>
+                <li><strong>反余弦</strong>: 计算反余弦值。
+                    <div class="code-example">
+                        (反余弦 0.5)
+                    </div>
+                </li>
+                <li><strong>反正弦</strong>: 计算反正弦值。
+                    <div class="code-example">
+                        (反正弦 0.5)
+                    </div>
+                </li>
+                <li><strong>反正切</strong>: 计算反正切值。
+                    <div class="code-example">
+                        (反正切 1)
+                    </div>
+                </li>
+                <li><strong>反正切2</strong>: 计算反正切值，考虑象限。
+                    <div class="code-example">
+                        (反正切2 1 1)
+                    </div>
+                </li>
+                <li><strong>向上取整</strong>: 向上取整。
+                    <div class="code-example">
+                        (向上取整 4.3)
+                    </div>
+                </li>
+                <li><strong>余弦</strong>: 计算余弦值。
+                    <div class="code-example">
+                        (余弦 0)
+                    </div>
+                </li>
+                <li><strong>指数</strong>: 计算指数。
+                    <div class="code-example">
+                        (指数 1)
+                    </div>
+                </li>
+                <li><strong>向下取整</strong>: 向下取整。
+                    <div class="code-example">
+                        (向下取整 4.7)
+                    </div>
+                </li>
+                <li><strong>对数</strong>: 计算对数。
+                    <div class="code-example">
+                        (对数 10)
+                    </div>
+                </li>
+                <li><strong>最大值</strong>: 计算最大值。
+                    <div class="code-example">
+                        (最大值 1 2 3)
+                    </div>
+                </li>
+                <li><strong>最小值</strong>: 计算最小值。
+                    <div class="code-example">
+                        (最小值 1 2 3)
+                    </div>
+                </li>
+                <li><strong>幂</strong>: 计算幂。
+                    <div class="code-example">
+                        (幂 2 3)
+                    </div>
+                </li>
+                <li><strong>随机</strong>: 生成随机数。
+                    <div class="code-example">
+                        (随机)
+                    </div>
+                </li>
+                <li><strong>四舍五入</strong>: 四舍五入。
+                    <div class="code-example">
+                        (四舍五入 4.5)
+                    </div>
+                </li>
+                <li><strong>正弦</strong>: 计算正弦值。
+                    <div class="code-example">
+                        (正弦 0)
+                    </div>
+                </li>
+                <li><strong>平方根</strong>: 计算平方根。
+                    <div class="code-example">
+                        (平方根 9)
+                    </div>
+                </li>
+                <li><strong>正切</strong>: 计算正切值。
+                    <div class="code-example">
+                        (正切 0)
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </body>
