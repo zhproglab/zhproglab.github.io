@@ -21,6 +21,11 @@ class Tokenizer {
                 case STATE_START:
                     if (/\s/.test(char)) {
                         // Ignore whitespace
+                    } else if (char === ';') {
+                        // Skip the rest of the line for comments
+                        while (this.index < this.code.length && this.code[this.index] !== '\n') {
+                            this.index++;
+                        }
                     } else if (char === '(' || char === ')') {
                         this.tokens.push(char);
                     } else if (/[\p{L}_]/u.test(char)) { // Match any Unicode letter or underscore
@@ -183,6 +188,21 @@ class Interpreter {
             return args.map(arg => JSON.stringify(arg, null, 2)).join(' ');
         });
 
+        // Define list operations
+        env.define('car', (list) => {
+            if (!Array.isArray(list)) {
+                throw new Error('car expects a list');
+            }
+            return list[0];
+        });
+
+        env.define('cdr', (list) => {
+            if (!Array.isArray(list)) {
+                throw new Error('cdr expects a list');
+            }
+            return list.slice(1);
+        });
+
         return env;
     }
 
@@ -191,7 +211,13 @@ class Interpreter {
         for (const expression of this.ast) {
             const result = this.evaluate(expression, this.globalEnv);
             if (result !== null) { // Only add non-null results to output
+                // remove the quotes from the string
+                if (typeof result === 'string' && result.startsWith('"') && result.endsWith('"')) {
+                    const clean_result = result.slice(1, -1);
+                    results.push(clean_result);
+                } else {
                 results.push(result);
+                }
             }
         }
         return results.join('\n');
@@ -268,6 +294,8 @@ const keywordMap = {
     "令": "let",
     "函数": "lambda",
     "定义函数": "defun",
+    "首": "car",
+    "尾": "cdr",
     "打印": "print",
     "加": "+",
     "减": "-",
@@ -311,13 +339,15 @@ function run_lisp(code) {
 
 // Usage
 const code = `
-    (定义 平方 (函数 (x) (* x x)))
-    (打印 (平方 3))
+    (定义 平方 (函数 (x) (* x x))) ; 定义一个计算平方的函数
+    (打印 (平方 3)) ; 打印 3 的平方
+
     (令 ((a 3) (b 4))
         (如果 (> a b)
-            (平方 a)
-            (平方 b)))
-    (打印 "Hello, World!")
+            (平方 a) ; 如果 a 大于 b，则计算 a 的平方
+            (平方 b))) ; 否则，计算 b 的平方
+
+    (打印 "为人民服务!") ; 打印问候语
 `;
 
 const result = run_lisp(code);
