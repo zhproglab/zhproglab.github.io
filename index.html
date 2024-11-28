@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>中文编程实验室</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
         body {
             margin: 0;
@@ -11,20 +12,70 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background-color: #f5f5f5;
+            justify-content: flex-start;
+            background-color: #f0f4f8;
             font-family: "Microsoft YaHei", sans-serif;
         }
 
-        .container {
+        .title-bar {
+            width: 100%;
+            background-color: #00796b;
+            color: white;
+            padding: 1rem;
             text-align: center;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
             padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .content {
+            flex: 2;
+            max-width: 800px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem;
+            line-height: 1.8;
+        }
+
+        .sidebar {
+            flex: 1;
+            max-width: 300px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem;
+            line-height: 1.6;
         }
 
         h1 {
             font-size: 2.5rem;
+            color: #00796b;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #004d40;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
             color: #333;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .enter-button {
@@ -32,31 +83,98 @@
             padding: 1rem 2rem;
             font-size: 1.2rem;
             color: white;
-            background-color: #4CAF50;
+            background-color: #00796b;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
+            margin-top: 1rem;
         }
 
         .enter-button:hover {
-            background-color: #45a049;
+            background-color: #004d40;
         }
 
-        .description {
-            margin-top: 2rem;
-            color: #666;
-            max-width: 600px;
-            line-height: 1.6;
+        pre {
+            background-color: #f7f7f7;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 1rem;
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1rem;
+            }
+
+            .content, .sidebar {
+                width: 100%;
+                margin: 0.5rem 0;
+                padding: 1rem;
+                box-sizing: border-box;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .enter-button {
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="title-bar">
+        中文编程实验室 🚀
+    </div>
     <div class="container">
-        <h1>中文编程实验室</h1>
-        <a href="lab.html" class="enter-button">进入实验室</a>
-        <div class="description">
-            欢迎道友来到中文编程实验室！在这里，我们一起思考中文编程的可能性。
+        <div class="content">
+            <h1>欢迎来到中文编程实验室 🌟</h1>
+            <p>在这里，我们探索一种全新的编程语言，让你轻松跨越语言障碍，开启编程之旅。🌐</p>
+            <h2>中文关键字 📚</h2>
+            <p>全面采用中文关键字，零基础也能轻松上手。🆕</p>
+            <h2>简单语法 ✨</h2>
+            <p>借鉴LISP的极简风格，无需学习复杂的语法规则。🧩</p>
+            <h2>函数式编程 🧠</h2>
+            <p>强调“是什么”，而不是“怎么做”，让编程更直观。🔍</p>
+            <h2>例子 📝</h2>
+            <pre><code class="language-lisp">
+(定义 平方 (函数 (x) ; 平方是x的函数
+    (* x x)))      ; 其值是x和x的乘积
+
+(打印 (平方 3)) ; 打印 3 的平方
+            </code></pre>
+        </div>
+        <div class="sidebar">
+            <h2>开始学习 📖</h2>
+            <p>从零开始，轻松学习编程。🚀</p>
+            <a href="intro.html" class="enter-button">进入教程 ➡️</a>
+
+            <h2>在线编程环境 🌐</h2>
+            <p>无需安装复杂的开发环境，打开页面即可在线编程。💻</p>
+            <a href="lab.html" class="enter-button">马上开始 ➡️</a>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-lisp.min.js"></script>
 </body>
 </html>
