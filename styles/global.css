@@ -101,3 +101,27 @@ pre {
 code {
     font-family: 'Courier New', Courier, monospace;
 }
+
+/* Add a container for the main content and sidebar */
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Style for the content and sidebar */
+.content {
+    flex: 1;
+    min-width: 300px; /* Ensures content doesn't get too small */
+}
+
+.sidebar {
+    flex: 0 0 300px; /* Fixed width for sidebar */
+    min-width: 300px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+}
