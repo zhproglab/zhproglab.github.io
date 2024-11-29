@@ -54,10 +54,9 @@ a:hover {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
-    margin-left: 20px;
+    padding: 0 20px;
 }
 
 .title-bar {
@@ -127,4 +126,11 @@ code {
     .main-container {
         flex-direction: column;
     }
+}
+
+img {
+    max-width: 100%; /* Ensures the image does not exceed the container's width */
+    height: auto;    /* Maintains the aspect ratio */
+    display: block;  /* Removes any extra space below the image */
+    margin: 0 auto;  /* Centers the image if it's smaller than the container */
 }
